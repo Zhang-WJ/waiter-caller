@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron">
+	<div class="container">
+		<h1>Account</h1>
+		<p>Manage tables and get URLs</p>
+	</div>
+</div>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h2>Tables</h2>
+			<table class="table table-striped">
+				<tr>
+					<th>No.</th>
+					<th>URL</th>
+					<th>Request</th>
+					<th>Delete</th>
+				</tr>
+				{% for table in tables %}
+
+						<tr>
+							<td>{{ table.number }}</td>
+							<td>{{ table.url }}</td>
+							<td>
+								<form class="form-inline" action="/newrequest">
+									<input type="submit" value="Add request" class="form-control">
+									<input type="text" name="tableid" value="{{ table.id }}" hidden="">
+								</form>
+							</td>
+							<td>
+								<form class="form-inline" action="/delete_table">
+									<input type="submit" value="Delete" class="form-control">
+									<input type="text" name="tableid" value="{{ table.id }}" hidden>
+								</form>
+							</td>
+						</tr>
+
+				{% endfor %}
+			</table>
+			<h2>Add new tables</h2>
+			<form class="form-inline" action="{{ url_for('main.create_table') }}" method="POST">
+				<div class="form-group">
+					{% if createtableform.tablenumber.errors %}
+						<ul class="errors">
+							{% for error in createtableform.tablenumber.errors %}
+								<li>{{ error }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+					{{ createtableform.csrf_token }}
+					{{ createtableform.tablenumber(class="form-control", placeholder="Table number or name") }}
+					{{ createtableform.submit(value='Create', class="btn btn-primary") }}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
